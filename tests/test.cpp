@@ -5,8 +5,8 @@
 
 TEST(Example, EmptyTest) {
     parseFinantial boostTest;
-    boostTest.getFiles("./../tests/ftp", "", 1);
-    EXPECT_EQ((std::string) boostTest.DATA_BASE["00001234"].broker, "ib");
+    boostTest.getFiles("./../misc/ftp", "", 1);
+    EXPECT_EQ((std::string) boostTest.DATA_BASE["00123458"].broker, "bcs");
 }
 
 int main(int argc, char **argv) {
