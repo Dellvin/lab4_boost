@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <utility>
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -17,10 +18,6 @@ using boost::filesystem::directory_iterator;
 using boost::filesystem::directory_entry;
 using boost::filesystem::path;
 using std::pair;
-
-const char* balance = "balance";
-const char* spacer = "_";
-const char* txt = "txt";
 
 struct economistProjects {
     string broker;
@@ -127,6 +124,9 @@ public:
     }
     const path pathToDir;
     map <string, economistProjects> DATA_BASE;
+    const char* balance = "balance";
+    const char* spacer = "_";
+    const char* txt = "txt";
 };
 
 #endif // INCLUDE_HEADER_HPP_
