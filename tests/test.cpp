@@ -4,7 +4,9 @@
 #include <header.hpp>
 
 TEST(Example, EmptyTest) {
-    EXPECT_TRUE(true);
+    parseFinantial boostTest;
+    boostTest.getFiles("/home/travis/build/Dellvin/lab4_boost/tests/ftp", "", 1);
+    EXPECT_EQ((std::string) boostTest.DATA_BASE["00001234"].broker, "ib");
 }
 
 int main(int argc, char **argv) {
