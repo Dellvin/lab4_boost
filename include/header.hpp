@@ -14,6 +14,7 @@ using std::cout;
 using std::endl;
 using std::map;
 using boost::filesystem::directory_iterator;
+using boost::filesystem::directory_entry;
 using boost::filesystem::path;
 using std::pair;
 
