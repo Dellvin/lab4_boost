@@ -7,17 +7,17 @@
 #include <boost/filesystem.hpp>
 #include <vector>
 #include <map>
-
-using namespace boost::filesystem;
+#include <string>
+#include <utility>
 using std::string;
 using std::cout;
 using std::endl;
 using std::map;
 using boost::filesystem::directory_iterator;
 
-const string balance = "balance";
-const string spacer = "_";
-const string txt = "txt";
+const char* balance = "balance";
+const char* spacer = "_";
+const char* txt = "txt";
 
 struct economistProjects {
     string broker;
@@ -64,7 +64,6 @@ public:
             DATA_BASE.insert(pair<string, economistProjects>
                     (currentStringBill, existedStruct));
         }
-
     }
 
     void printDATA() {
@@ -117,11 +116,14 @@ public:
     }
 
     bool checkNumber(char str) {
-        if ((str >= '0') && (str <= '9')) { return true; }
-        else { return false; }
+        if ((str >= '0') && (str <= '9'))
+        {
+            return true;
+        } else {
+            return false;
+        }
     }
-
-public:
+    
     const path pathToDir;
     map <string, economistProjects> DATA_BASE;
 };
