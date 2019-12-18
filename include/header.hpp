@@ -5,158 +5,125 @@
 
 #include <iostream>
 #include <boost/filesystem.hpp>
-#include <map>
 #include <vector>
-#include <string>
+#include <map>
 
-#define DIRECTORY 3
-#define COM_FILE 2
-#define RIGHT_LENGTH 29
-
-using boost::filesystem::path;
-
+using namespace boost::filesystem;
+using std::string;
 using std::cout;
 using std::endl;
 using std::map;
-using std::vector;
-using std::stoi;
-
 using boost::filesystem::directory_iterator;
 
-class fsystem
-{
-    public:
-    bool is_digit(std::string verifiable){
-        bool flag = true;
-        for (unsigned i = 0; i < 8; ++i)
-        {
-            if ((verifiable[i] < '0') || (verifiable[i] > '9'))
-                flag = false;
+const string balance = "balance";
+const string spacer = "_";
+const string txt = "txt";
+
+struct economistProjects {
+    string broker;
+    int billsCount;
+    int billLastDate;
+};
+
+class parseFinantial {
+public:
+
+    void setDATA_BASE(string economist, string info) {
+        bool existedEconomistFlag = false;
+        string currentStringBill;
+        string currentStringDate;
+        int currentDate;
+        int pos = info.find("_");
+        int endPos = info.find("_", pos + 1);
+        for (int i = pos + 1; i < endPos; i++) {
+            currentStringBill.push_back(info.at(i));
         }
-        return flag;
+        pos = endPos;
+        for (uint64_t i = pos + 1; i < info.size(); i++) {
+            currentStringDate.push_back(info.at(i));
+        }
+        currentDate = atoi(currentStringDate.c_str());
+        if (DATA_BASE.find(currentStringBill) != DATA_BASE.end()) {
+            existedEconomistFlag = true;
+        }
+        economistProjects existedStruct;
+        if (DATA_BASE.find(currentStringBill) != DATA_BASE.end()) {
+            existedStruct = DATA_BASE[currentStringBill];
+        }
+        if (existedEconomistFlag) {
+            existedStruct.billsCount++;
+            if (existedStruct.billLastDate < currentDate) {
+                existedStruct.billLastDate = currentDate;
+            }
+            existedStruct.broker = economist;
+            DATA_BASE[currentStringBill] = existedStruct;
+        } else {
+            existedStruct.billsCount = 1;
+            existedStruct.billLastDate = currentDate;
+            existedStruct.broker = economist;
+            DATA_BASE.insert(pair<string, economistProjects>
+                    (currentStringBill, existedStruct));
+        }
+
     }
 
-    void print_first()
-    {
-        for (unsigned it = 0; it < broker_map.size(); ++it)
-        {
-            cout << broker_map[it][0] << " balance_" << broker_map[it][1] <<
-            "_" << broker_map[it][2];
-            cout << endl;
+    void printDATA() {
+        for (auto it = DATA_BASE.begin(); it != DATA_BASE.end(); ++it) {
+            cout << "broker: " << (*it).first << " account: "
+            << (*it).second.broker
+                 << " files: " << (*it).second.billsCount
+                 << " lastdate: " << (*it).second.billLastDate << endl;
         }
     }
 
-    bool check_format(const path file_n)
-    {
-        std::string file = file_n.c_str();
-
-        if (file.find("balance_") != 0) {
-            return false;
-        }
-        auto iter = file.find("_") + 1;
-        if (file.substr(iter, (file.size())).find_first_of("0123456789") != 0) {
-            return false;
-        }
-        if (file.substr(iter, file.size()).find_first_not_of("0123456789")
-            != 8) {
-            return false;
-        }
-        iter = file.find("_", iter) + 1;
-        if (file.substr(iter, (file.size())).find_first_of("0123456789")
-            != 0) {
-            return false;
-        }
-        if (file.substr(iter, file.size()).find_first_not_of("0123456789")
-            != 8) {
-            return false;
-        }
-        if (file.find(".old") == file.size()) {
-            return false;
-        }
-        if (file.find(".txt") == file.size()){
-            return false;
-        }
-        return true;
-    }
-
-    void create_account(path _path) {
-        std::string __path = _path.filename().c_str();
-        std::string __parent_name = _path.parent_path().filename().c_str();
-        vector<std::string> tmp;
-        tmp.push_back(__parent_name);
-        tmp.push_back(__path.substr(8, 8));
-        tmp.push_back(__path.substr(17, 8));
-        broker_map.push_back(tmp);
-    }
-
-    void print_second()
-    {
-        for (unsigned i = 0; i < clear_map.size(); ++i)
-            cout << "broker:" << clear_map[i][0] <<
-                 " account:" << clear_map[i][1] <<
-                 " files:" << clear_map[i][2] <<
-                 " lastdate:" << clear_map[i][3]
-                 << endl;
-    }
-
-    void create_clear()
-    {
-        for (unsigned it = 0; it < broker_map.size(); it++)
-        {
-            unsigned j = 0;
-            int flag = 0;
-            for (; j < clear_map.size(); ++j)
-            {
-                if ((broker_map[it][0] == clear_map[j][0]) &&
-                (broker_map[it][1] == clear_map[j][1])) {
-                    flag = 1;
-                    int tmp = stoi(clear_map[j][2]);
-                    tmp++;
-                    clear_map[j][2] = std::to_string(tmp);
-                    if (stoi(broker_map[it][2]) > stoi(clear_map[j][3])) {
-                        clear_map[j][3] = broker_map[it][2];
+    bool checkFileName(string pathToFile) {
+        const path p{pathToFile};
+        string fileName = boost::filesystem::basename(p.stem());
+        if (pathToFile.size() != 25) return false;
+        if (!fileName.find(balance)) {
+            if (fileName.find(spacer) == 7) {
+                for (int i = 8; i < 16; i++) {
+                    if (!checkNumber(fileName.at(i))) {
+                        return false;
                     }
                 }
-            }
-            if (flag == 0) {
-                vector<std::string> tmp;
-                tmp.push_back(broker_map[it][0]);
-                tmp.push_back(broker_map[it][1]);
-                tmp.push_back("1");
-                tmp.push_back(broker_map[it][2]);
-                clear_map.push_back(tmp);
-            }
-        }
-    }
-
-    void start(path _input_dir)
-    {
-        parent_dir = _input_dir;
-        engine(_input_dir);
-        print_first();
-
-        create_clear();
-        print_second();
-    }
-
-
-    void engine(path _input_dir)
-    {
-        for (directory_iterator p(_input_dir), end; p != end; p++) {
-            if (p->status().type() == DIRECTORY)
-                engine(p->path());
-            if (p->status().type() == COM_FILE) {
-                if (check_format(p->path().filename()) == true)
-                {
-                    create_account(p->path());
+                if (fileName.find(spacer, fileName.find(spacer) + 1) == 16) {
+                    for (int i = 17; i < 25; i++) {
+                        if (!checkNumber(fileName.at(i))) {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
             }
         }
+        return false;
     }
 
-    path parent_dir;
-    vector<vector<std::string>> clear_map;
-    vector<vector<std::string>> broker_map;
+
+    void getFiles(string currentDir, string lastDir, int rang) {
+        const path d{currentDir};
+        for (const directory_entry &x : directory_iterator{d}) {
+            const path p = x;
+            string fileName = boost::filesystem::basename(p.filename());
+            if (is_directory(p))
+                getFiles(currentDir + "/" + boost::filesystem::basename
+                (p.filename()), fileName, rang + 1);
+            if (checkFileName(fileName)) {
+                cout << lastDir << " " << fileName << endl;
+                setDATA_BASE(lastDir, fileName);
+            }
+        }
+    }
+
+    bool checkNumber(char str) {
+        if ((str >= '0') && (str <= '9')) { return true; }
+        else { return false; }
+    }
+
+public:
+    const path pathToDir;
+    map <string, economistProjects> DATA_BASE;
 };
 
 #endif // INCLUDE_HEADER_HPP_
