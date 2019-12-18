@@ -14,6 +14,8 @@ using std::cout;
 using std::endl;
 using std::map;
 using boost::filesystem::directory_iterator;
+using boost::filesystem::path;
+using std::pair;
 
 const char* balance = "balance";
 const char* spacer = "_";
@@ -27,7 +29,6 @@ struct economistProjects {
 
 class parseFinantial {
 public:
-
     void setDATA_BASE(string economist, string info) {
         bool existedEconomistFlag = false;
         string currentStringBill;
@@ -123,7 +124,6 @@ public:
             return false;
         }
     }
-    
     const path pathToDir;
     map <string, economistProjects> DATA_BASE;
 };
