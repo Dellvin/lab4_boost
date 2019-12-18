@@ -4,8 +4,6 @@
 #include <header.hpp>
 
 TEST(Example, EmptyTest) {
-    fsystem test;
-    test.start("./../misc/ftp/");
     EXPECT_TRUE(true);
 }
 
